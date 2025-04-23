@@ -1,4 +1,5 @@
 -- Create database
+DROP DATABASE IF EXISTS coffee_db;
 CREATE DATABASE IF NOT EXISTS coffee_db;
 USE coffee_db;
 
