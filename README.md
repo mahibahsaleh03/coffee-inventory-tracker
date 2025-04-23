@@ -13,7 +13,7 @@ git clone https://github.com/YOUR_USERNAME/coffee-inventory-tracker.git
 cd coffee-inventory-tracker
 ```
 
-### 3. 🛠 Run Setup Script
+### 3. Run Setup Script
 
 ```bash
 chmod +x setup.sh   # Only needed once
@@ -41,7 +41,7 @@ This creates the full schema.
 mongod
 ```
 
-### 4. ▶️ Start the App
+### 4. Start the App
 
 ```bash
 source venv/bin/activate  # Windows: venv\Scripts\activate
