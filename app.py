@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from pymongo import MongoClient
 import pymysql
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -19,6 +20,22 @@ mysql = pymysql.connect(
     database=os.getenv('MYSQL_DB'),
     cursorclass=pymysql.cursors.DictCursor
 )
+
+# Import existing coffee store credientials
+with open('logins.json', 'r') as file:
+    data = json.load(file)
+
+for login in data['logins']:
+    with mysql.cursor() as cursor:
+            username = login['username']
+            cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+            user = cursor.fetchone()
+            if not user:
+                cursor.execute(
+                    "INSERT INTO users (username, password, StoreName) VALUES (%s, %s, %s)",
+                    (username, generate_password_hash(login['password']), login['store_name'])
+                )
+                mysql.commit()
 
 # MongoDB setup
 mongo_client = MongoClient('mongodb://localhost:27017/')
@@ -256,8 +273,6 @@ def purchase():
         products = cursor.fetchall()
 
     return render_template('purchase.html', products=products)
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)

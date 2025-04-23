@@ -1,0 +1,9 @@
+{
+    "logins": [
+        {"username": "tmp", "password": "password", "store_name": "coffee_shop"},
+        {"username": "tmp2", "password": "password2", "store_name": "coffee_shop_2"},
+        {"username": "tmp3", "password": "password3", "store_name": "coffee_shop_3"},
+        {"username": "tmp4", "password": "password4", "store_name": "coffee_shop_4"},
+        {"username": "tmp5", "password": "password5", "store_name": "coffee_shop_5"}
+    ]
+}
