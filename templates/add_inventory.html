@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<html>
+  <body>
+    <h2>Add New Inventory</h2>
+
+    {% if beans %}
+    <form method="POST">
+      <label>Select Coffee Bean:</label><br>
+      <select name="bean_id" required>
+        {% for bean in beans %}
+          <option value="{{ bean.BeanID }}">
+            {{ bean.Brand }} ({{ bean.Type }})
+          </option>
+        {% endfor %}
+      </select><br><br>
+
+      <label>Amount:</label><br>
+      <input type="number" name="amount" min="0" required><br><br>
+
+      <button type="submit">Add to Inventory</button>
+    </form>
+    {% else %}
+      <p>No new beans available to add.</p>
+    {% endif %}
+
+    <p><a href="/dashboard">← Back to Dashboard</a></p>
+  </body>
+</html>

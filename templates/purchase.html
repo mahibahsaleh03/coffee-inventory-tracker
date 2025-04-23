@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Purchase Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <h2>🛒 Record a Product Sale</h2>
+
+    <form method="POST">
+      <label>Select Product:</label><br>
+      <select name="product_id" required>
+        {% for product in products %}
+          <option value="{{ product.ProductID }}">{{ product.Name }}</option>
+        {% endfor %}
+      </select><br><br>
+
+      <label>Quantity Sold:</label><br>
+      <input type="number" name="quantity" min="1" required><br><br>
+
+      <button type="submit">Complete Sale</button>
+    </form>
+
+    <p><a href="/dashboard">← Back to Dashboard</a></p>
+  </body>
+</html>

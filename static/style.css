@@ -1,0 +1,82 @@
+body {
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background-color: #fdfaf6;
+  color: #333;
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 2rem;
+  border-radius: 12px;
+  background: #fff8f1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #5e4033;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #d7ccc8;
+  padding-bottom: 0.3rem;
+}
+
+form {
+  margin-top: 1rem;
+}
+
+input, select, textarea {
+  font-size: 1rem;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+button {
+  background-color: #795548;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #5d4037;
+}
+
+a {
+  color: #6d4c41;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+th, td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+ul {
+  padding-left: 1.2rem;
+}
+
+ul li {
+  margin-bottom: 0.4rem;
+}
+
+p {
+  margin-top: 1rem;
+}

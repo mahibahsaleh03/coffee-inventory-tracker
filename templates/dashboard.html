@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<html>
+  <body>
+    <h2>Inventory Dashboard</h2>
+    <table border="1">
+      <tr>
+        <th>Type</th>
+        <th>Brand</th>
+        <th>Flavor</th>
+        <th>Expiration Date</th>
+        <th>Amount</th>
+        <th>Update</th>
+      </tr>
+      {% for item in inventory %}
+      <tr>
+        <form method="POST" action="/update-inventory">
+          <td>{{ item.Type }}</td>
+          <td>{{ item.Brand }}</td>
+          <td>{{ item.Flavor }}</td>
+          <td>{{ item.ExpirationDate }}</td>
+          <td>
+            <input type="number" name="amount" value="{{ item.Amount }}" min="0" required>
+          </td>
+          <td>
+            <input type="hidden" name="bean_id" value="{{ item.BeanID }}">
+            <button type="submit">Update</button>
+          </td>
+        </form>
+      </tr>
+      {% endfor %}
+    </table>
+    <h2 style="color: darkred;">⚠️ Low Stock Alerts</h2>
+    {% if low_stock %}
+      <ul>
+        {% for item in low_stock %}
+          <li>
+            {{ item.Brand }} ({{ item.Type }}) — Only {{ item.Amount }} left!
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No low stock items. You're all stocked up! ✅</p>
+    {% endif %}
+    <p><a href="/add-inventory"><button>Add New Inventory Item</button></a></p>
+    <p><a href="/purchase"><button>Record a Purchase</button></a></p>
+    <p><a href="/logout">Logout</a></p>
+
+    <h2>Customer Reviews</h2>
+    {% if reviews %}
+      <ul>
+        {% for review in reviews %}
+          <li>
+            <strong>Rating:</strong> {{ review.rating }} / 5<br>
+            <strong>Review:</strong> {{ review.review }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No reviews yet for your store.</p>
+    {% endif %}
+  </body>
+</html>

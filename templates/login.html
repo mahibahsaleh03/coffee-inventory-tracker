@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Store Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <h2>🔐 Store Login</h2>
+
+    <form method="POST">
+      <input name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+
+    <p><a href="/register">Register a new store</a></p>
+    <p><a href="/">← Back to Home</a></p>
+  </body>
+</html>
