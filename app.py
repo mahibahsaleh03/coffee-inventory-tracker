@@ -210,7 +210,7 @@ def add_inventory():
     with mysql.cursor() as cursor:
         cursor.execute("SELECT BeanID, Brand, Type FROM coffee_beans") 
         available_beans = cursor.fetchall()
-        cursor.execute("SELECT contact FROM suppliers")
+        cursor.execute("SELECT Contact FROM suppliers")
         suppliers = cursor.fetchall()
 
     return render_template('add_inventory.html', beans=available_beans, suppliers=suppliers)
