@@ -130,20 +130,15 @@ def dashboard():
         low_stock=low_stock
     )
 
-@app.route('/update-inventory', methods=['POST'])
-@login_required
-def update_inventory():
-    bean_id = request.form['bean_id']
-    new_amount = request.form['amount']
-    store_id = session.get('_user_id')
+
+def update_inventory(bean_id, new_amount, store_id):
     with mysql.cursor() as cursor:
         cursor.execute("""
             UPDATE inventory
-            SET Amount = %s
+            SET Amount = %s + Amount
             WHERE BeanID = %s AND StoreID = %s
         """, (new_amount, bean_id, store_id))
         mysql.commit()
-    return redirect(url_for('dashboard'))
 
 @app.route('/logout')
 @login_required
@@ -196,27 +191,29 @@ def add_inventory():
     if request.method == 'POST':
         bean_id = request.form['bean_id']
         amount = request.form['amount']
-
-        # Insert new inventory row for this store
+        
         with mysql.cursor() as cursor:
-            cursor.execute("""
-                INSERT INTO inventory (BeanID, Amount, StoreID)
-                VALUES (%s, %s, %s)
-            """, (bean_id, amount, store_id))
-            mysql.commit()
+            cursor.execute("SELECT * FROM inventory where storeID = %s AND beanID= %s", (store_id, bean_id,))
+            store = cursor.fetchone()
+            if store:
+                update_inventory(bean_id, amount, store_id)
+            else:
+         # Insert new inventory row for this store
+                cursor.execute("""
+                    INSERT INTO inventory (BeanID, Amount, StoreID)
+                    VALUES (%s, %s, %s)
+                     """, (bean_id, amount, store_id))
+                mysql.commit()
         return redirect(url_for('dashboard'))
 
     # GET: show form with beans not yet in store's inventory
     with mysql.cursor() as cursor:
-        cursor.execute("""
-            SELECT BeanID, Brand, Type FROM coffee_beans
-            WHERE BeanID NOT IN (
-                SELECT BeanID FROM inventory WHERE StoreID = %s
-            )
-        """, (store_id,))
+        cursor.execute("SELECT BeanID, Brand, Type FROM coffee_beans") 
         available_beans = cursor.fetchall()
+        cursor.execute("SELECT contact FROM suppliers")
+        suppliers = cursor.fetchall()
 
-    return render_template('add_inventory.html', beans=available_beans)
+    return render_template('add_inventory.html', beans=available_beans, suppliers=suppliers)
 
 @app.route('/purchase', methods=['GET', 'POST'])
 @login_required
