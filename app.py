@@ -251,11 +251,29 @@ def purchase():
                     WHERE StoreID = %s AND BeanID = %s
                 """, (store_id, bean_id))
 
+                # Insert purchase into purchase history
+                cursor.execute("""
+                    SELECT Name, Price FROM products
+                    WHERE ProductID = %s
+                """, (product_id))
+                product = cursor.fetchone()
+
+                cursor.execute("""
+                    SELECT Brand, Type FROM coffee_beans
+                    WHERE BeanID = %s
+                """, (bean_id))
+                bean_used = cursor.fetchone()
+
+                cursor.execute("""
+                    INSERT INTO purchase_history (StoreID, Time, Product, Quantity, Price, Type, Brand)
+                    VALUES (%s, NOW(), %s, %s, %s, %s, %s)
+                """, (store_id, product['Name'], quantity, product['Price'], bean_used['Type'], bean_used['Brand']))
+
                 mysql.commit()
 
         return redirect(url_for('dashboard'))
 
-    # GET: show available products & beans
+    # GET: show available products & beans in stock
     with mysql.cursor() as cursor:
         cursor.execute("SELECT * FROM products")
         products = cursor.fetchall()
