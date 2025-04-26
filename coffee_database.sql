@@ -53,6 +53,7 @@ CREATE TABLE products (
 CREATE TABLE purchase_history (
 	PurchaseID INT AUTO_INCREMENT PRIMARY KEY,
     StoreID INT,
+    DATETIME Time,
     Product VARCHAR(100) NOT NULL,
     Quantity INT,
     Price DECIMAL(5,2),
@@ -99,5 +100,5 @@ INSERT INTO products (Name, Price) VALUES
 ('Nitro Cold Brew', 5.75), ('Iced Coffee', 3.95), ('Iced Coffee Vertica', 3.95), 
 ('Iced Shaken Espresso', 4.45), ('Macchiato', 5.95), ('Mocha', 5.95);
 
-INSERT INTO purchase_history (StoreID, Product, Quantity, Price, Type, Brand) VALUES
-(1, 'Macchiato', 1, 5.95, 'Arabica', 'Blue Mountain');
+INSERT INTO purchase_history (StoreID, Time, Product, Quantity, Price, Type, Brand) VALUES
+(1, '2025-02-12 07:04:19', 'Macchiato', 1, 5.95, 'Arabica', 'Blue Mountain');

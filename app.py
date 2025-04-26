@@ -220,7 +220,7 @@ def add_inventory():
                     mysql.commit()
         return redirect(url_for('dashboard'))
 
-    # GET: show form with beans not yet in store's inventory
+    # GET: showing all beans from suppliers
     with mysql.cursor() as cursor:
         cursor.execute("SELECT BeanID, Brand, Type FROM coffee_beans") 
         available_beans = cursor.fetchall()
@@ -236,23 +236,11 @@ def purchase():
 
     if request.method == 'POST':
         product_id = int(request.form['product_id'])
+        bean_id = int(request.form['bean_id'])
         quantity = int(request.form['quantity'])
 
-        # Fetch all bean requirements for this product
+        # Check if store has enough beans required in inventory
         with mysql.cursor() as cursor:
-            cursor.execute("""
-                SELECT pb.BeanID, pb.AmountRequired
-                FROM product_bean_usage pb
-                WHERE pb.ProductID = %s
-            """, (product_id,))
-            bean_requirements = cursor.fetchall()
-
-        # Check if store has enough of each bean
-        with mysql.cursor() as cursor:
-            for req in bean_requirements:
-                bean_id = req['BeanID']
-                total_needed = req['AmountRequired'] * quantity
-
                 # Get current inventory
                 cursor.execute("""
                     SELECT Amount FROM inventory
@@ -260,30 +248,48 @@ def purchase():
                 """, (store_id, bean_id))
                 row = cursor.fetchone()
 
-                if not row or row['Amount'] < total_needed:
-                    return f"⚠️ Not enough stock of Bean ID {bean_id} to complete this order."
-
-            # Deduct each bean from inventory
-            for req in bean_requirements:
-                bean_id = req['BeanID']
-                total_needed = req['AmountRequired'] * quantity
+                if not row or row['Amount'] < 5:
+                    return f"⚠️ Not enough beans in stock to complete this order!"
 
                 cursor.execute("""
                     UPDATE inventory
-                    SET Amount = Amount - %s
+                    SET Amount = Amount - 5
                     WHERE StoreID = %s AND BeanID = %s
-                """, (total_needed, store_id, bean_id))
+                """, (store_id, bean_id))
 
-            mysql.commit()
+                # Insert purchase into purchase history
+                cursor.execute("""
+                    SELECT Name, Price FROM products
+                    WHERE ProductID = %s
+                """, (product_id))
+                product = cursor.fetchone()
+
+                cursor.execute("""
+                    SELECT Brand, Type FROM coffee_beans
+                    WHERE BeanID = %s
+                """, (bean_id))
+                bean_used = cursor.fetchone()
+
+                cursor.execute("""
+                    INSERT INTO purchase_history (StoreID, Time, Product, Quantity, Price, Type, Brand)
+                    VALUES (%s, NOW(), %s, %s, %s, %s, %s)
+                """, (store_id, product['Name'], quantity, product['Price'], bean_used['Type'], bean_used['Brand']))
+
+                mysql.commit()
 
         return redirect(url_for('dashboard'))
 
-    # GET: show available products
+    # GET: show available products & beans in stock
     with mysql.cursor() as cursor:
         cursor.execute("SELECT * FROM products")
         products = cursor.fetchall()
+        cursor.execute("""SELECT coffee_beans.BeanID, coffee_beans.Brand, coffee_beans.Type 
+                       FROM coffee_beans
+                       JOIN inventory ON coffee_beans.BeanID = inventory.BeanID
+                       WHERE inventory.StoreID = %s""", (store_id,)) 
+        available_beans = cursor.fetchall()
 
-    return render_template('purchase.html', products=products)
+    return render_template('purchase.html', products=products, beans=available_beans)
 
 if __name__ == '__main__':
     app.run(debug=True)
