@@ -114,6 +114,11 @@ def dashboard():
         """, (store_id, LOW_STOCK_THRESHOLD))
         low_stock = cursor.fetchall()
 
+    # Purchase history
+    with mysql.cursor() as cursor:
+        cursor.execute("SELECT * FROM purchase_history")
+        purchase_history = cursor.fetchall()
+
     with mysql.cursor() as cursor:
         cursor.execute("SELECT StoreName FROM users WHERE id = %s", (store_id,))
         user_row = cursor.fetchone()
@@ -127,7 +132,8 @@ def dashboard():
         'dashboard.html',
         inventory=inventory,
         reviews=reviews,
-        low_stock=low_stock
+        low_stock=low_stock,
+        purchase_history=purchase_history
     )
 
 

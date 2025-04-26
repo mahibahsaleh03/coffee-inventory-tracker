@@ -57,5 +57,16 @@
     {% else %}
       <p>No reviews yet for your store.</p>
     {% endif %}
+
+    <h2>Purchase History</h2>
+    {% if reviews %}
+      <ul>
+        {% for purchase in purchase_history %}
+	  <li>{{ purchase.Product }} {{ purchase.Quantity }} {{ purchase.Price }}</li>
+	{% endfor %}
+      </ul>
+    {% else %}
+      <p>No Purchases right now</p>
+    {% endif %}
   </body>
 </html>
