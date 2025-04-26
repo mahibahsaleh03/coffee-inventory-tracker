@@ -264,7 +264,7 @@ def purchase_history():
     store_id = session.get('_user_id')
 
     with mysql.cursor() as cursor:
-        cursor.execute("SELECT * from purchase_history WHERE StoreID=%s", (store_id))
+        cursor.execute("SELECT * from purchase_history WHERE StoreID=%s ORDER BY Time DESC", (store_id))
         purchase_history = cursor.fetchall()
     
     df_purchased = pd.DataFrame(purchase_history)
