@@ -15,6 +15,15 @@
         {% endfor %}
       </select><br><br>
 
+      <label>Select Coffee Bean:</label><br>
+      <select name="bean_id" required>
+        {% for bean in beans %}
+          <option value="{{ bean.BeanID }}">
+            {{ bean.Brand }} ({{ bean.Type }})
+          </option>
+        {% endfor %}
+      </select><br><br>
+
       <label>Quantity Sold:</label><br>
       <input type="number" name="quantity" min="1" required><br><br>
 
