@@ -53,7 +53,7 @@ CREATE TABLE products (
 CREATE TABLE purchase_history (
 	PurchaseID INT AUTO_INCREMENT PRIMARY KEY,
     StoreID INT,
-    DATETIME Time,
+    Time DATETIME,
     Product VARCHAR(100) NOT NULL,
     Quantity INT,
     Price DECIMAL(5,2),

@@ -42,6 +42,7 @@
     {% endif %}
     <p><a href="/add-inventory"><button>Add New Inventory Item</button></a></p>
     <p><a href="/purchase"><button>Record a Purchase</button></a></p>
+    <p><a href="/purchase_history"><button>Purchase History</button></a></p>
     <p><a href="/logout">Logout</a></p>
 
     <h2>Customer Reviews</h2>
@@ -56,17 +57,6 @@
       </ul>
     {% else %}
       <p>No reviews yet for your store.</p>
-    {% endif %}
-
-    <h2>Purchase History</h2>
-    {% if reviews %}
-      <ul>
-        {% for purchase in purchase_history %}
-	  <li>{{ purchase.Product }} {{ purchase.Quantity }} {{ purchase.Price }}</li>
-	{% endfor %}
-      </ul>
-    {% else %}
-      <p>No Purchases right now</p>
     {% endif %}
   </body>
 </html>

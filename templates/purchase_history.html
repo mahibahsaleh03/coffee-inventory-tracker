@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Purchase Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <h2>🛒 Purchase History</h2>
+    {% if purchase_history %}
+    <table>
+      <tr>
+        <th>Time</th>
+	<th>Product</th>
+	<th>Quantity</th>
+	<th>Price</th>
+	<th>Type</th>
+	<th>Brand</th>
+      </tr>
+      {% for purchase in purchase_history %}
+        <tr>
+	  <th>{{ purchase.Time }}</th>
+	  <th>{{ purchase.Product }}</th>
+	  <th>{{ purchase.Quantity }}</th>
+	  <th>{{ purchase.Price }}</th>
+	  <th>{{ purchase.Type }}</th>
+	  <th>{{ purchase.Brand }}</th>
+        </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p>No purchases yet</p>
+    {% endif %}
+
+    <p><a href="/dashboard">← Back to Dashboard</a></p>
+  </body>
+</html>

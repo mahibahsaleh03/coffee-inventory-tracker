@@ -114,11 +114,6 @@ def dashboard():
         """, (store_id, LOW_STOCK_THRESHOLD))
         low_stock = cursor.fetchall()
 
-    # Purchase history
-    with mysql.cursor() as cursor:
-        cursor.execute("SELECT * FROM purchase_history")
-        purchase_history = cursor.fetchall()
-
     with mysql.cursor() as cursor:
         cursor.execute("SELECT StoreName FROM users WHERE id = %s", (store_id,))
         user_row = cursor.fetchone()
@@ -133,7 +128,6 @@ def dashboard():
         inventory=inventory,
         reviews=reviews,
         low_stock=low_stock,
-        purchase_history=purchase_history
     )
 
 
@@ -228,6 +222,17 @@ def add_inventory():
         suppliers = cursor.fetchall()
 
     return render_template('add_inventory.html', beans=available_beans, suppliers=suppliers)
+
+@app.route('/purchase_history', methods=['GET'])
+@login_required
+def purchase_history():
+    store_id = session.get('_user_id')
+
+    with mysql.cursor() as cursor:
+        cursor.execute("SELECT * from purchase_history WHERE StoreID=%s", (store_id))
+        purchase_history = cursor.fetchall()
+
+    return render_template('purchase_history.html', purchase_history=purchase_history)
 
 @app.route('/purchase', methods=['GET', 'POST'])
 @login_required
