@@ -37,6 +37,34 @@ for login in data['logins']:
                 )
                 mysql.commit()
 
+
+# Open your CSV file
+with open('purchase_history.json', 'r') as file:
+    data = json.load(file)
+
+for purchase in data:
+    with mysql.cursor() as cursor:
+            purchase_id = purchase['PurchaseID']
+            store_id = purchase['StoreID']
+            time = purchase['Time']
+            product = purchase['Product']
+            quantity = purchase['Quantity']
+            price = purchase['Price']
+            type_ = purchase['Type']
+            brand = purchase['Brand']
+
+            cursor.execute("SELECT * FROM purchase_history WHERE purchaseID = %s", (purchase_id,))
+            this_purchase = cursor.fetchone()
+            if not this_purchase:
+                cursor.execute(
+                    """
+                    INSERT INTO purchase_history (PurchaseID, StoreID, Time, Product, Quantity, Price, Type, Brand)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    """,
+                    (purchase['PurchaseID'], purchase['StoreID'], purchase['Time'], purchase['Product'], purchase['Quantity'], purchase['Price'], purchase['Type'], purchase['Brand'])
+                )
+                mysql.commit()
+
 # MongoDB setup
 mongo_client = MongoClient('mongodb://localhost:27017/')
 mongo_db = mongo_client['coffee_tracker_mongo']
