@@ -6,6 +6,8 @@ import pymysql
 import os
 import json
 from dotenv import load_dotenv
+import pandas as pd
+import matplotlib.pyplot as plt
 
 load_dotenv()
 
@@ -59,7 +61,7 @@ for purchase in data:
                 cursor.execute(
                     """
                     INSERT INTO purchase_history (PurchaseID, StoreID, Time, Product, Quantity, Price, Type, Brand)
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     """,
                     (purchase['PurchaseID'], purchase['StoreID'], purchase['Time'], purchase['Product'], purchase['Quantity'], purchase['Price'], purchase['Type'], purchase['Brand'])
                 )
@@ -263,6 +265,32 @@ def purchase_history():
     with mysql.cursor() as cursor:
         cursor.execute("SELECT * from purchase_history WHERE StoreID=%s", (store_id))
         purchase_history = cursor.fetchall()
+    
+    df_purchased = pd.DataFrame(purchase_history)
+
+    top3 = df_purchased.sort_values(by='Quantity', ascending=False).head(3)
+    top3_quant = sum(top3['Quantity'])
+    net_quant = sum(df_purchased['Quantity'])
+    top3_percentage = float((top3_quant / net_quant) * 100)
+
+    plt.figure(figsize=(8,5))
+    plt.barh(top3['Brand'], top3['Quantity'], color='#5e4033')
+    plt.xlabel('Quantity Sold')
+    plt.title('Top 3 Coffee Bean Brands by Quantity Sold')
+    plt.gca().invert_yaxis()  # Highest at top
+
+    plt.text(
+        0.95, 0.05,  # (x,y) position in figure (in axis coordinates)
+        f"Top 3 Quantity: {top3_percentage:.2f}% of Total",
+        transform=plt.gca().transAxes,  # Relative to plot, not data
+        fontsize=12,
+        color='darkgreen',
+        ha='right',
+        bbox=dict(facecolor='white', alpha=0.7, edgecolor='gray')
+    )
+
+    plt.tight_layout()
+    plt.savefig('static/img.png')
 
     return render_template('purchase_history.html', purchase_history=purchase_history)
 
