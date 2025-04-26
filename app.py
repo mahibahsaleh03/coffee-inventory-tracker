@@ -191,26 +191,32 @@ def add_inventory():
     if request.method == 'POST':
         bean_id = request.form['bean_id']
         amount = request.form['amount']
-        
+        SupplierName = request.form['SupplierName']
+
         with mysql.cursor() as cursor:
-            cursor.execute("SELECT * FROM inventory where storeID = %s AND beanID= %s", (store_id, bean_id,))
-            store = cursor.fetchone()
-            if store:
-                update_inventory(bean_id, amount, store_id)
+            cursor.execute("SELECT * from coffee_beans where SupplierID=(SELECT SupplierID from suppliers where SupplierName=%s) AND BeanID=%s", (SupplierName, bean_id,))
+            s = cursor.fetchone()
+            if not s:
+                return f"out of stock"
             else:
-         # Insert new inventory row for this store
-                cursor.execute("""
-                    INSERT INTO inventory (BeanID, Amount, StoreID)
-                    VALUES (%s, %s, %s)
-                     """, (bean_id, amount, store_id))
-                mysql.commit()
+                cursor.execute("SELECT * FROM inventory WHERE storeID = %s AND beanID= %s", (store_id, bean_id,))
+                store = cursor.fetchone()
+                if store:
+                    update_inventory(bean_id, amount, store_id)
+                else:
+                # Insert new inventory row for this store
+                    cursor.execute("""
+                        INSERT INTO inventory (BeanID, Amount, StoreID)
+                        VALUES (%s, %s, %s)
+                        """, (bean_id, amount, store_id))
+                    mysql.commit()
         return redirect(url_for('dashboard'))
 
     # GET: show form with beans not yet in store's inventory
     with mysql.cursor() as cursor:
         cursor.execute("SELECT BeanID, Brand, Type FROM coffee_beans") 
         available_beans = cursor.fetchall()
-        cursor.execute("SELECT Contact FROM suppliers")
+        cursor.execute("SELECT SupplierName FROM suppliers")
         suppliers = cursor.fetchall()
 
     return render_template('add_inventory.html', beans=available_beans, suppliers=suppliers)
@@ -273,3 +279,5 @@ def purchase():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+

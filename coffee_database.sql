@@ -14,6 +14,7 @@ CREATE TABLE users (
 -- Suppliers
 CREATE TABLE suppliers (
   SupplierID INT AUTO_INCREMENT PRIMARY KEY,
+  SupplierName VARCHAR(255),
   Contact VARCHAR(255),
   Location VARCHAR(255)
 );
@@ -44,27 +45,28 @@ CREATE TABLE inventory (
 -- Products (e.g., latte, cold brew)
 CREATE TABLE products (
   ProductID INT AUTO_INCREMENT PRIMARY KEY,
-  Name VARCHAR(100) NOT NULL
+  Price DECIMAL(5,2),
+  Name VARCHAR(100) NOT NULL UNIQUE
 );
 
--- Product → Bean mapping
-CREATE TABLE product_bean_usage (
-  ProductID INT,
-  BeanID INT,
-  AmountRequired INT,
-  PRIMARY KEY (ProductID, BeanID),
-  FOREIGN KEY (ProductID) REFERENCES products(ProductID),
-  FOREIGN KEY (BeanID) REFERENCES coffee_beans(BeanID)
+CREATE TABLE purchase_history (
+	PurchaseID INT AUTO_INCREMENT PRIMARY KEY,
+    StoreID INT,
+    Product VARCHAR(100) NOT NULL,
+    Quantity INT,
+    Price DECIMAL(5,2),
+    Type VARCHAR(100),
+    Brand VARCHAR(100)
 );
 
 -- Sample Suppliers
-INSERT INTO suppliers (Contact, Location) VALUES
-('contact@bluemountain.com', 'Jamaica'),
-('info@ethiopiansunbeans.com', 'Ethiopia'),
-('support@colombianexporters.co', 'Colombia'),
-('hello@kenyabeans.org', 'Kenya'),
-('sales@brazilsantos.com', 'Brazil'),
-('orders@sumatrabeanimports.id', 'Indonesia');
+INSERT INTO suppliers (SupplierName, Contact, Location) VALUES
+('bluemountain', 'contact@bluemountain.com', 'Jamaica'),
+('ethiopiansunbeans', 'info@ethiopiansunbeans.com', 'Ethiopia'),
+('colombianexporters', 'support@colombianexporters.co', 'Colombia'),
+('kenyabeans', 'hello@kenyabeans.org', 'Kenya'),
+('brazilsantos', 'sales@brazilsantos.com', 'Brazil'),
+('sumatrabeanimports', 'orders@sumatrabeanimports.id', 'Indonesia');
 
 -- Sample Coffee Beans
 INSERT INTO coffee_beans (Type, Brand, Flavor, Origin, Price, ExpirationDate, SupplierID) VALUES
@@ -89,19 +91,12 @@ INSERT INTO coffee_beans (Type, Brand, Flavor, Origin, Price, ExpirationDate, Su
 ('Arabica', 'El Salvador Pacamara', 'Sweet & Spicy', 'El Salvador', 16.10, '2025-10-15', 3),
 ('Arabica', 'Nicaragua Segovia', 'Balanced & Cocoa', 'Nicaragua', 14.70, '2025-11-01', 3);
 
--- Sample Products
-INSERT INTO products (Name) VALUES
-('Latte'), ('Espresso'), ('Cold Brew'), ('Americano'), ('Cappuccino');
+-- Sample Products, select type of coffee bean to prep at purchase
+INSERT INTO products (Name, Price) VALUES
+('Latte', 5.25), ('Espresso', 3.75), ('Cold Brew', 4.65), ('Americano', 4.25), 
+('Cappuccino', 5.25), ('Flat White', 5.25), 
+('Nitro Cold Brew', 5.75), ('Iced Coffee', 3.95), ('Iced Coffee Vertica', 3.95), 
+('Iced Shaken Espresso', 4.45), ('Macchiato', 5.95), ('Mocha', 5.95);
 
--- Sample Product Usage Mapping
--- (ProductID, BeanID, AmountRequired)
--- Latte uses Colombian Supremo (BeanID = 5)
--- Espresso uses the same
--- Cold Brew uses Brazil Santos (BeanID = 9)
-
-INSERT INTO product_bean_usage (ProductID, BeanID, AmountRequired) VALUES
-(1, 5, 18),  -- Latte: Colombian Supremo
-(2, 5, 18),  -- Espresso: Colombian Supremo
-(3, 9, 25),  -- Cold Brew: Brazil Santos
-(4, 5, 15),  -- Americano
-(5, 5, 18);  -- Cappuccino
+INSERT INTO purchase_history (StoreID, Product, Quantity, Price, Type, Brand) VALUES
+(1, 'Macchiato', 1, 5.95, 'Arabica', 'Blue Mountain');
