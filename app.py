@@ -39,8 +39,7 @@ for login in data['logins']:
                 )
                 mysql.commit()
 
-
-# Open your CSV file
+# Import purchase history for store 4
 with open('purchase_history.json', 'r') as file:
     data = json.load(file)
 
