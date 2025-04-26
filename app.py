@@ -96,7 +96,7 @@ def dashboard():
 
     with mysql.cursor() as cursor:
         cursor.execute("""
-            SELECT cb.BeanID, cb.Type, cb.Brand, cb.Flavor, cb.ExpirationDate, i.Amount
+            SELECT cb.BeanID, cb.Type, cb.Brand, cb.Flavor, i.ExpirationDate, i.Amount
             FROM coffee_beans cb
             JOIN inventory i ON cb.BeanID = i.BeanID
             WHERE i.StoreID = %s
@@ -135,7 +135,7 @@ def update_inventory(bean_id, new_amount, store_id):
     with mysql.cursor() as cursor:
         cursor.execute("""
             UPDATE inventory
-            SET Amount = %s + Amount
+            SET Amount = %s + Amount, ExpirationDate = DATE_ADD(CURDATE(), INTERVAL 1 YEAR)
             WHERE BeanID = %s AND StoreID = %s
         """, (new_amount, bean_id, store_id))
         mysql.commit()
@@ -199,6 +199,8 @@ def add_inventory():
             if not s:
                 return f"out of stock"
             else:
+                cursor.execute("SELECT ProductionDate from coffee_beans WHERE BeanID=%s", (bean_id,))
+                productionDate = cursor.fetchone()['ProductionDate']
                 cursor.execute("SELECT * FROM inventory WHERE storeID = %s AND beanID= %s", (store_id, bean_id,))
                 store = cursor.fetchone()
                 if store:
@@ -206,9 +208,9 @@ def add_inventory():
                 else:
                 # Insert new inventory row for this store
                     cursor.execute("""
-                        INSERT INTO inventory (BeanID, Amount, StoreID)
-                        VALUES (%s, %s, %s)
-                        """, (bean_id, amount, store_id))
+                        INSERT INTO inventory (BeanID, Amount, StoreID, ExpirationDate)
+                        VALUES (%s, %s, %s, %s)
+                        """, (bean_id, amount, store_id, productionDate))
                     mysql.commit()
         return redirect(url_for('dashboard'))
 

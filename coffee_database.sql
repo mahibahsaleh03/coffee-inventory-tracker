@@ -27,7 +27,7 @@ CREATE TABLE coffee_beans (
   Flavor VARCHAR(100),
   Origin VARCHAR(100),
   Price DECIMAL(5,2),
-  ExpirationDate DATE,
+  ProductionDate DATE,
   SupplierID INT,
   FOREIGN KEY (SupplierID) REFERENCES suppliers(SupplierID)
 );
@@ -38,6 +38,7 @@ CREATE TABLE inventory (
   BeanID INT,
   Amount INT,
   StoreID INT,
+  ExpirationDate DATE,
   FOREIGN KEY (BeanID) REFERENCES coffee_beans(BeanID),
   FOREIGN KEY (StoreID) REFERENCES users(id)
 );
@@ -69,7 +70,7 @@ INSERT INTO suppliers (SupplierName, Contact, Location) VALUES
 ('sumatrabeanimports', 'orders@sumatrabeanimports.id', 'Indonesia');
 
 -- Sample Coffee Beans
-INSERT INTO coffee_beans (Type, Brand, Flavor, Origin, Price, ExpirationDate, SupplierID) VALUES
+INSERT INTO coffee_beans (Type, Brand, Flavor, Origin, Price, ProductionDate, SupplierID) VALUES
 ('Arabica', 'Blue Mountain', 'Nutty & Mild', 'Jamaica', 18.99, '2025-02-01', 1),
 ('Robusta', 'Vietnam Gold', 'Bold & Earthy', 'Vietnam', 12.50, '2025-03-15', 6),
 ('Liberica', 'Borneo Blend', 'Smoky & Woody', 'Malaysia', 14.75, '2025-04-10', 6),
