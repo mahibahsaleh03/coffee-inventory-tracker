@@ -40,6 +40,11 @@ for login in data['logins']:
 # MongoDB setup
 mongo_client = MongoClient('mongodb://localhost:27017/')
 mongo_db = mongo_client['coffee_tracker_mongo']
+# Load reviews dataset for coffee_shop_4 into MongoDB
+with open('review_dataset.json', 'r') as file:
+    reviews = json.load(file)
+mongo_db.customer_reviews.insert_many(reviews)
+print("Successfully inserted reviews into MongoDB.")
 
 # Flask-Login setup
 login_manager = LoginManager()
@@ -130,16 +135,6 @@ def dashboard():
         low_stock=low_stock,
     )
 
-
-def update_inventory(bean_id, new_amount, store_id):
-    with mysql.cursor() as cursor:
-        cursor.execute("""
-            UPDATE inventory
-            SET Amount = %s + Amount, ExpirationDate = DATE_ADD(CURDATE(), INTERVAL 1 YEAR)
-            WHERE BeanID = %s AND StoreID = %s
-        """, (new_amount, bean_id, store_id))
-        mysql.commit()
-
 @app.route('/logout')
 @login_required
 def logout():
@@ -164,7 +159,7 @@ def review():
             store = cursor.fetchone()
 
         if not store:
-            error = "⚠️ That store name does not exist. Please check your spelling!"
+            error = "⚠️ The store does not exist. Please check your spelling!"
             return render_template('review.html', error=error)
 
         # Store exists — insert review
@@ -182,6 +177,15 @@ def review():
 @app.route('/')
 def index():
     return render_template('home.html')
+
+def update_inventory(bean_id, new_amount, store_id):
+    with mysql.cursor() as cursor:
+        cursor.execute("""
+            UPDATE inventory
+            SET Amount = %s + Amount, ExpirationDate = DATE_ADD(CURDATE(), INTERVAL 1 YEAR)
+            WHERE BeanID = %s AND StoreID = %s
+        """, (new_amount, bean_id, store_id))
+        mysql.commit()
 
 @app.route('/add-inventory', methods=['GET', 'POST'])
 @login_required

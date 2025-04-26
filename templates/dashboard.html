@@ -50,7 +50,7 @@
       <ul>
         {% for review in reviews %}
           <li>
-            <strong>Rating:</strong> {{ review.rating }} / 5<br>
+            <strong>Rating:</strong> {{ "⭐️ " * review.rating }}<br>
             <strong>Review:</strong> {{ review.review }}
           </li>
         {% endfor %}
