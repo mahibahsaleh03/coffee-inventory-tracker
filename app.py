@@ -71,6 +71,9 @@ for purchase in data:
 # MongoDB setup
 mongo_client = MongoClient('mongodb://localhost:27017/')
 mongo_db = mongo_client['coffee_tracker_mongo']
+# Reset reviews database when restarting app
+mongo_db.customer_reviews.delete_many({})
+
 # Load reviews dataset for coffee_shop_4 into MongoDB
 with open('review_dataset.json', 'r') as file:
     reviews = json.load(file)
@@ -139,7 +142,7 @@ def dashboard():
         """, (store_id,))
         inventory = cursor.fetchall()
 
-    LOW_STOCK_THRESHOLD = 10
+    LOW_STOCK_THRESHOLD = 20
     # Find low-stock items for this store
     with mysql.cursor() as cursor:
         cursor.execute("""
@@ -269,10 +272,11 @@ def purchase_history():
     
     df_purchased = pd.DataFrame(purchase_history)
 
-    top3 = df_purchased.sort_values(by='Quantity', ascending=False).head(3)
-    top3_quant = sum(top3['Quantity'])
-    net_quant = sum(df_purchased['Quantity'])
-    top3_percentage = float((top3_quant / net_quant) * 100)
+    brand_totals = df_purchased.groupby('Brand')['Quantity'].sum().reset_index()
+    top3 = brand_totals.sort_values(by='Quantity', ascending=False).head(3)
+    net_quantity = brand_totals['Quantity'].sum()
+    top3_quantity = top3['Quantity'].sum()
+    top3_percentage = float((top3_quantity / net_quantity) * 100)
 
     plt.figure(figsize=(8,5))
     plt.barh(top3['Brand'], top3['Quantity'], color='#5e4033')
@@ -285,7 +289,7 @@ def purchase_history():
         f"Top 3 Quantity: {top3_percentage:.2f}% of Total",
         transform=plt.gca().transAxes,  # Relative to plot, not data
         fontsize=12,
-        color='darkgreen',
+        color='brown',
         ha='right',
         bbox=dict(facecolor='white', alpha=0.7, edgecolor='gray')
     )

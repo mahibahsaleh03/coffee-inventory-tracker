@@ -1,127 +1,127 @@
 [
     {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
         "rating": 5,
-        "review": "Not my favorite blend, but still enjoyable."
+        "review": "First time trying their hazelnut blend and I love the nutty flavor."
     },
     {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
+        "rating": 5,
+        "review": "If you love coffee this place is a must-visit! They have a variety of blends to choose from."
+    },
+    {
+        "shop_name": "coffee_shop",
         "rating": 4,
-        "review": "A bit crowded but worth the wait."
+        "review": "Excellent atmosphere for studying or working remotely."
     },
     {
-        "shop_name": "coffee_shop_4",
-        "rating": 4,
-        "review": "Excellent atmosphere, perfect for studying or working remotely."
+        "shop_name": "coffee_shop",
+        "rating": 5,
+        "review": "This espresso shot woke me up faster than my alarm. So strong!"
     },
     {
-        "shop_name": "coffee_shop_4",
-        "rating": 2,
+        "shop_name": "coffee_shop",
+        "rating": 5,
         "review": "Would definitely come back again."
     },
     {
-        "shop_name": "coffee_shop_4",
-        "rating": 3,
-        "review": "Would definitely come back again."
+        "shop_name": "coffee_shop",
+        "rating": 4,
+        "review": "I liked the Ice Cold brew, couldn't take too much difference from regular ones though"
     },
     {
-        "shop_name": "coffee_shop_4",
-        "rating": 3,
-        "review": "I appreciate the eco-friendly packaging."
-    },
-    {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
         "rating": 1,
-        "review": "A bit crowded but worth the wait."
+        "review": "Cannot find a seat for 3 :("
     },
     {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
         "rating": 4,
-        "review": "Excellent atmosphere, perfect for studying or working remotely."
+        "review": "Perfect balance of milk and espresso."
     },
     {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
         "rating": 2,
-        "review": "The pastries were a nice surprise alongside the coffee."
+        "review": "The item I ordered was out of stock."
     },
     {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
         "rating": 5,
-        "review": "Would definitely come back again."
-    },
-    {
-        "shop_name": "coffee_shop_4",
-        "rating": 4,
         "review": "Love the seasonal flavors they offer."
     },
     {
-        "shop_name": "coffee_shop_4",
-        "rating": 5,
-        "review": "A bit crowded but worth the wait."
+        "shop_name": "coffee_shop",
+        "rating": 3,
+        "review": "Decent coffee."
     },
     {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
+        "rating": 5,
+        "review": "Loved the seasonal gingerbread latte. Sweet but not too sweet — will be back before the holidays end!."
+    },
+    {
+        "shop_name": "coffee_shop",
         "rating": 4,
         "review": "Great spot for a casual meeting."
     },
     {
         "shop_name": "coffee_shop",
-        "rating": 1,
+        "rating": 4,
         "review": "The latte art was beautiful!"
     },
     {
-        "shop_name": "coffee_shop_4",
-        "rating": 1,
-        "review": "The pastries were a nice surprise alongside the coffee."
+        "shop_name": "coffee_shop",
+        "rating": 5,
+        "review": "The barista recommended the vanilla latte and it was delicious."
     },
     {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
         "rating": 4,
         "review": "Good coffee but the seating area was a bit cramped."
     },
     {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
+        "rating": 5,
+        "review": "The cappuccino was perfect."
+    },
+    {
+        "shop_name": "coffee_shop",
         "rating": 2,
-        "review": "Perfect balance between strength and flavor."
+        "review": "A bit pricey."
     },
     {
         "shop_name": "coffee_shop",
-        "rating": 1,
-        "review": "Fair prices and good selection of drinks."
-    },
-    {
-        "shop_name": "coffee_shop",
-        "rating": 4,
+        "rating": 5,
         "review": "Fantastic service and amazing coffee! Highly recommend."
     },
     {
-        "shop_name": "coffee_shop_4",
-        "rating": 2,
-        "review": "Great spot for a casual meeting."
-    },
-    {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
         "rating": 3,
-        "review": "Solid choice for coffee lovers."
+        "review": "Not my favorite roast. It was a little too bitter for my taste."
     },
     {
-        "shop_name": "coffee_shop_4",
-        "rating": 1,
-        "review": "Good coffee but the seating area was a bit cramped."
-    },
-    {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
         "rating": 4,
-        "review": "The iced coffee was very refreshing."
+        "review": "Can always count on this shop for quick service and great coffee. Never disappoints."
     },
     {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
+        "rating": 1,
+        "review": "Messed up my order!"
+    },
+    {
+        "shop_name": "coffee_shop",
+        "rating": 4,
+        "review": "I’ve had better coffees, but the staff was so nice I would come back."
+    },
+    {
+        "shop_name": "coffee_shop",
         "rating": 5,
         "review": "Great coffee shop! Always consistent with their brews."
     },
     {
-        "shop_name": "coffee_shop_4",
+        "shop_name": "coffee_shop",
         "rating": 3,
-        "review": "Excellent atmosphere, perfect for studying or working remotely."
+        "review": "Just okay. Nothing special."
     }
 ]
