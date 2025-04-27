@@ -78,7 +78,6 @@ mongo_db.customer_reviews.delete_many({})
 with open('review_dataset.json', 'r') as file:
     reviews = json.load(file)
 mongo_db.customer_reviews.insert_many(reviews)
-print("Successfully inserted reviews into MongoDB.")
 
 # Flask-Login setup
 login_manager = LoginManager()
@@ -269,33 +268,34 @@ def purchase_history():
     with mysql.cursor() as cursor:
         cursor.execute("SELECT * from purchase_history WHERE StoreID=%s ORDER BY Time DESC", (store_id))
         purchase_history = cursor.fetchall()
-    
-    df_purchased = pd.DataFrame(purchase_history)
+    if purchase_history:
 
-    brand_totals = df_purchased.groupby('Brand')['Quantity'].sum().reset_index()
-    top3 = brand_totals.sort_values(by='Quantity', ascending=False).head(3)
-    net_quantity = brand_totals['Quantity'].sum()
-    top3_quantity = top3['Quantity'].sum()
-    top3_percentage = float((top3_quantity / net_quantity) * 100)
+        df_purchased = pd.DataFrame(purchase_history)
 
-    plt.figure(figsize=(8,5))
-    plt.barh(top3['Brand'], top3['Quantity'], color='#5e4033')
-    plt.xlabel('Quantity Sold')
-    plt.title('Top 3 Coffee Bean Brands by Quantity Sold')
-    plt.gca().invert_yaxis()  # Highest at top
+        brand_totals = df_purchased.groupby('Brand')['Quantity'].sum().reset_index()
+        top3 = brand_totals.sort_values(by='Quantity', ascending=False).head(3)
+        net_quantity = brand_totals['Quantity'].sum()
+        top3_quantity = top3['Quantity'].sum()
+        top3_percentage = float((top3_quantity / net_quantity) * 100)
 
-    plt.text(
-        0.95, 0.05,  # (x,y) position in figure (in axis coordinates)
-        f"Top 3 Quantity: {top3_percentage:.2f}% of Total",
-        transform=plt.gca().transAxes,  # Relative to plot, not data
-        fontsize=12,
-        color='brown',
-        ha='right',
-        bbox=dict(facecolor='white', alpha=0.7, edgecolor='gray')
-    )
+        plt.figure(figsize=(8,5))
+        plt.barh(top3['Brand'], top3['Quantity'], color='#5e4033')
+        plt.xlabel('Quantity Sold')
+        plt.title('Top 3 Coffee Bean Brands by Quantity Sold')
+        plt.gca().invert_yaxis()  # Highest at top
 
-    plt.tight_layout()
-    plt.savefig('static/img.png')
+        plt.text(
+            0.95, 0.05,  # (x,y) position in figure (in axis coordinates)
+            f"Top 3 Quantity: {top3_percentage:.2f}% of Total",
+            transform=plt.gca().transAxes,  # Relative to plot, not data
+            fontsize=12,
+            color='brown',
+            ha='right',
+            bbox=dict(facecolor='white', alpha=0.7, edgecolor='gray')
+        )
+
+        plt.tight_layout()
+        plt.savefig('static/img.png')
 
     return render_template('purchase_history.html', purchase_history=purchase_history)
 
