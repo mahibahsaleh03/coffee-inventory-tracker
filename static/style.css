@@ -33,6 +33,16 @@ input, select, textarea {
   background-color: #fff;
 }
 
+.flash-message {
+  background-color: #ffe0e0;
+  color: #8b0000;
+  border: 1px solid #ffcccc;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
 button {
   background-color: #795548;
   color: white;

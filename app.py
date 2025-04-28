@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, url_for
+from flask import flash
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from pymongo import MongoClient
@@ -231,29 +232,39 @@ def add_inventory():
         SupplierName = request.form['SupplierName']
 
         with mysql.cursor() as cursor:
-            cursor.execute("SELECT * from coffee_beans where SupplierID=(SELECT SupplierID from suppliers where SupplierName=%s) AND BeanID=%s", (SupplierName, bean_id,))
+            # Check if the selected supplier actually sells the selected bean
+            cursor.execute("""
+                SELECT * FROM coffee_beans 
+                WHERE SupplierID = (SELECT SupplierID FROM suppliers WHERE SupplierName = %s)
+                AND BeanID = %s
+            """, (SupplierName, bean_id))
             s = cursor.fetchone()
+
             if not s:
-                return f"out of stock"
+                flash("⚠️ This bean is not sold by the selected supplier!")
+                return redirect(url_for('add_inventory'))
+
+            # Supplier has the bean — proceed
+            cursor.execute("SELECT ProductionDate from coffee_beans WHERE BeanID=%s", (bean_id,))
+            productionDate = cursor.fetchone()['ProductionDate']
+
+            cursor.execute("SELECT * FROM inventory WHERE StoreID = %s AND BeanID = %s", (store_id, bean_id))
+            store = cursor.fetchone()
+
+            if store:
+                update_inventory(bean_id, amount, store_id)
             else:
-                cursor.execute("SELECT ProductionDate from coffee_beans WHERE BeanID=%s", (bean_id,))
-                productionDate = cursor.fetchone()['ProductionDate']
-                cursor.execute("SELECT * FROM inventory WHERE storeID = %s AND beanID= %s", (store_id, bean_id,))
-                store = cursor.fetchone()
-                if store:
-                    update_inventory(bean_id, amount, store_id)
-                else:
-                # Insert new inventory row for this store
-                    cursor.execute("""
-                        INSERT INTO inventory (BeanID, Amount, StoreID, ExpirationDate)
-                        VALUES (%s, %s, %s, %s)
-                        """, (bean_id, amount, store_id, productionDate))
-                    mysql.commit()
+                cursor.execute("""
+                    INSERT INTO inventory (BeanID, Amount, StoreID, ExpirationDate)
+                    VALUES (%s, %s, %s, %s)
+                """, (bean_id, amount, store_id, productionDate))
+                mysql.commit()
+
         return redirect(url_for('dashboard'))
 
-    # GET: showing all beans from suppliers
+    # GET: Show beans and suppliers
     with mysql.cursor() as cursor:
-        cursor.execute("SELECT BeanID, Brand, Type FROM coffee_beans") 
+        cursor.execute("SELECT BeanID, Brand, Type FROM coffee_beans")
         available_beans = cursor.fetchall()
         cursor.execute("SELECT SupplierName FROM suppliers")
         suppliers = cursor.fetchall()
@@ -309,43 +320,47 @@ def purchase():
         bean_id = int(request.form['bean_id'])
         quantity = int(request.form['quantity'])
 
-        # Check if store has enough beans required in inventory
         with mysql.cursor() as cursor:
-                # Get current inventory
-                cursor.execute("""
-                    SELECT Amount FROM inventory
-                    WHERE StoreID = %s AND BeanID = %s
-                """, (store_id, bean_id))
-                row = cursor.fetchone()
+            # Check inventory for selected bean
+            cursor.execute("""
+                SELECT Amount FROM inventory
+                WHERE StoreID = %s AND BeanID = %s
+            """, (store_id, bean_id))
+            row = cursor.fetchone()
 
-                if not row or row['Amount'] < 5:
-                    return f"⚠️ Not enough beans in stock to complete this order!"
+            # Assume each product uses a fixed amount of beans (example: 5 units per product)
+            required_beans = 5 * quantity
 
-                cursor.execute("""
-                    UPDATE inventory
-                    SET Amount = Amount - 5
-                    WHERE StoreID = %s AND BeanID = %s
-                """, (store_id, bean_id))
+            if not row or row['Amount'] < required_beans:
+                flash("⚠️ Not enough beans in stock to complete this purchase!")
+                return redirect(url_for('purchase'))
 
-                # Insert purchase into purchase history
-                cursor.execute("""
-                    SELECT Name, Price FROM products
-                    WHERE ProductID = %s
-                """, (product_id))
-                product = cursor.fetchone()
+            # Deduct beans
+            cursor.execute("""
+                UPDATE inventory
+                SET Amount = Amount - %s
+                WHERE StoreID = %s AND BeanID = %s
+            """, (required_beans, store_id, bean_id))
 
-                cursor.execute("""
-                    SELECT Brand, Type FROM coffee_beans
-                    WHERE BeanID = %s
-                """, (bean_id))
-                bean_used = cursor.fetchone()
+            # Insert into purchase history
+            cursor.execute("""
+                SELECT Name, Price FROM products
+                WHERE ProductID = %s
+            """, (product_id,))
+            product = cursor.fetchone()
 
-                cursor.execute("""
-                    INSERT INTO purchase_history (StoreID, Time, Product, Quantity, Price, Type, Brand)
-                    VALUES (%s, NOW(), %s, %s, %s, %s, %s)
-                """, (store_id, product['Name'], quantity, product['Price'], bean_used['Type'], bean_used['Brand']))
+            cursor.execute("""
+                SELECT Brand, Type FROM coffee_beans
+                WHERE BeanID = %s
+            """, (bean_id,))
+            bean_used = cursor.fetchone()
 
-                mysql.commit()
+            cursor.execute("""
+                INSERT INTO purchase_history (StoreID, Time, Product, Quantity, Price, Type, Brand)
+                VALUES (%s, NOW(), %s, %s, %s, %s, %s)
+            """, (store_id, product['Name'], quantity, product['Price'], bean_used['Type'], bean_used['Brand']))
+
+            mysql.commit()
 
         return redirect(url_for('dashboard'))
 
