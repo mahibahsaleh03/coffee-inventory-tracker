@@ -3,8 +3,8 @@
 ### 1. Prerequisites
 
 - Python 3.8+
-- MySQL Server (local)
-- MongoDB (local)
+- MySQL Server (local) [https://dev.mysql.com/downloads/mysql/](https://dev.mysql.com/downloads/mysql/)
+- MongoDB (local) [https://www.mongodb.com/docs/manual/installation/](https://www.mongodb.com/docs/manual/installation/)
 
 ### 2. Clone the Project
 
